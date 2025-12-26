@@ -21,10 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${interFont.variable} antialiased`}>
-        <main>
-          <Header />
-          <div className="app-container pt-40">{children}</div>
-        </main>
+        <Header />
+        <div className="app-container pt-40 min-h-[90vh]">{children}</div>
       </body>
     </html>
   );

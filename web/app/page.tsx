@@ -1,7 +1,7 @@
-const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+import Landing from "@/components/page/Landing";
 
-export default page
+const page = () => {
+  return <Landing />;
+};
+
+export default page;
