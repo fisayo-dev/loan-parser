@@ -3,11 +3,11 @@ import Button from "../field/Button";
 
 const Features = () => {
   return (
-    <div className="my-20 grid gap-4">
+    <div className="lg:my-20 grid gap-4">
       <div className="grid gap-20">
         <div className="grid items-center grid-cols-1 gap-4 md:grid-cols-2">
           <div className="block">
-            <h2 className="capitalize font-bold text-7xl leading-19 mb-4">
+            <h2 className="capitalize font-bold text-5xl lg:text-7xl lg:leading-19 mb-4">
               Unlimited Documents upload.
             </h2>
             <Button text="Upload docs now" className="px-6 " />
@@ -33,7 +33,7 @@ const Features = () => {
             />
           </div>
           <div className="col-span-1">
-            <h2 className="font-bold text-7xl leading-19 mb-4">
+            <h2 className="font-bold text-5xl lg:text-7xl lg:leading-19 mb-4">
               Integrate CSV/JSON <br /> Data into Loan Software.
             </h2>
             <Button text="Start integrating" className="px-6 " />
@@ -41,7 +41,7 @@ const Features = () => {
         </div>
         <div className="grid items-center grid-cols-1 gap-4 md:grid-cols-2">
           <div className="block">
-            <h2 className="font-bold text-7xl leading-19 mb-4">
+            <h2 className="font-bold text-5xl lg:text-7xl lg:leading-19 mb-4">
               Get loan Breakdown & Risk Highlight.
             </h2>
             <Button text="Get Breakdown" className="px-6 " />
