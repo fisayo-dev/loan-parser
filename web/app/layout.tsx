@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Header from "@/components/page/Header";
 
 const interFont = localFont({
-  src: "../public/fonts/Inter-VariableFont_opsz,wght.ttf",
+  src: "../public/fonts/Inter-font.ttf",
   variable: "--font-inter",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -20,7 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${interFont.variable} antialiased`}>{children}</body>
+      <body className={`${interFont.variable} antialiased`}>
+        <main>
+          <Header />
+          <div className="app-container pt-40">{children}</div>
+        </main>
+      </body>
     </html>
   );
 }
