@@ -22,8 +22,8 @@ const Features = () => {
             />
           </div>
         </div>
-        <div className="grid items-center grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex">
+        <div className="grid justify-between items-center grid-cols-1 md:grid-cols-2">
+          <div className="col-span-1">
             <Image
               src="/assets/integrate.png"
               alt="Globe Image"
@@ -32,7 +32,7 @@ const Features = () => {
               className="h-100 w-100"
             />
           </div>
-          <div className="block">
+          <div className="col-span-1">
             <h2 className="font-bold text-7xl leading-19 mb-4">
               Integrate CSV/JSON <br /> Data into Loan Software.
             </h2>
