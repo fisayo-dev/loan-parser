@@ -3,8 +3,8 @@ import Button from "../field/Button";
 const Landing = () => {
   return (
     <div className="">
-      <div className=" grid place-items-center h-full">
-        <div className="flex flex-col items-center justify-center text-center">
+      <div className="grid place-items-center h-full">
+        <div className="2xl:py-20 py-10 flex flex-col items-center justify-center text-center">
           <div className="flex flex-col">
             <h2 className="leading-20 text-4xl lg:text-7xl font-bold">
               Simplify Complex <br></br> Loan Documents

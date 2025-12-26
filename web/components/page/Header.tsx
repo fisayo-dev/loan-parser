@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <div className="fixed w-full grid items-center border border-gray-200 h-20 backdrop-blur-3xl ">
+    <div className="fixed w-full grid items-center border-b border-black/90 h-20 bg-[#ededed]">
       <div className="app-container w-full flex justify-between items-center">
         <h2 className="text-2xl font-bold">Loan Parser</h2>
 
@@ -19,7 +19,7 @@ const Header = () => {
               Star on GitHub
             </button>
           </Link>
-          <Button text="Get Started" className="text-sm"/>
+          <Button text="Get Started" className="text-sm" />
         </div>
       </div>
     </div>
