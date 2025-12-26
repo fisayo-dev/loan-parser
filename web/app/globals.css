@@ -28,3 +28,12 @@ body {
 .app-container {
   @apply container mx-auto lg:px-24 md:px-16 px-5;
 }
+
+button {
+  cursor: pointer;
+}
+
+.star-btn:hover .star-icon {
+  color: #fbbf24;
+  fill: #fbbf24;
+}
