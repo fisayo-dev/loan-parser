@@ -1,4 +1,5 @@
 import Features from "@/components/page/Features";
+import Footer from "@/components/page/Footer";
 import Landing from "@/components/page/Landing";
 
 const page = () => {
@@ -6,6 +7,7 @@ const page = () => {
     <div className="grid gap-30">
       <Landing />
       <Features />
+      <Footer />
     </div>
   );
 };
