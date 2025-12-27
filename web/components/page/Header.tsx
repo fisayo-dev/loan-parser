@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <div className="fixed w-full grid items-center border-b border-black/90 h-20 bg-[#ededed]">
+    <div className="fixed w-full grid items-center border-b border-black/90 h-20 bg-[#ffffff]">
       <div className="app-container w-full flex justify-between items-center">
         <h2 className="text-2xl font-bold">Loan Parser</h2>
 

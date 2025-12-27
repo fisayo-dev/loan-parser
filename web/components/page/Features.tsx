@@ -3,7 +3,7 @@ import Button from "../field/Button";
 
 const Features = () => {
   return (
-    <div className="lg:my-20 grid gap-4">
+    <div className=" grid gap-4">
       <div className="grid gap-20">
         <div className="grid items-center grid-cols-1 gap-4 md:grid-cols-2">
           <div className="block">
@@ -12,12 +12,12 @@ const Features = () => {
             </h2>
             <Button text="Upload docs now" className="px-6 " />
           </div>
-          <div className="flex justify-end">
+          <div className="flex md:justify-end">
             <Image
               src="/assets/upload.jpg"
               alt="Globe Image"
-              height={20}
-              width={20}
+              height={300}
+              width={300}
               className="h-100 w-100"
             />
           </div>
@@ -27,8 +27,8 @@ const Features = () => {
             <Image
               src="/assets/integrate.png"
               alt="Globe Image"
-              height={20}
-              width={20}
+              height={300}
+              width={300}
               className="h-100 w-100"
             />
           </div>
@@ -46,12 +46,12 @@ const Features = () => {
             </h2>
             <Button text="Get Breakdown" className="px-6 " />
           </div>
-          <div className="flex justify-end">
+          <div className="flex md:justify-end">
             <Image
               src="/assets/integrate.png"
               alt="Globe Image"
-              height={20}
-              width={20}
+              height={300}
+              width={300}
               className="h-100 w-100"
             />
           </div>
