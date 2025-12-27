@@ -1,4 +1,15 @@
+import Features from "@/components/page/Features";
+import Footer from "@/components/page/Footer";
+import Landing from "@/components/page/Landing";
 
-export default function Home() {
-  return <h1>2</h1>;
-}
+const page = () => {
+  return (
+    <div className="grid gap-30">
+      <Landing />
+      <Features />
+      <Footer />
+    </div>
+  );
+};
+
+export default page;

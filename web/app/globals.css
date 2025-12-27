@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ededed;
+  --background: #ffffff;
   --foreground: #171717;
 }
 
@@ -14,13 +14,26 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ededed;
+    --background: #ffffff;
     --foreground: #0a0a0a;
   }
 }
 
 body {
+  font-family: var(--font-inter);
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), var(--font-mono), sans-serif;
+}
+
+.app-container {
+  @apply container mx-auto lg:px-24 md:px-16 px-5;
+}
+
+button {
+  cursor: pointer;
+}
+
+.star-btn:hover .star-icon {
+  color: #fbbf24;
+  fill: #fbbf24;
 }
