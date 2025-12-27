@@ -20,31 +20,31 @@ const Button = ({
     black: {
       filled: "bg-black text-white hover:bg-black/90 focus:ring-gray-500",
       outline:
-        "border-2 border-black text-black hover:bg-black hover:text-white focus:ring-gray-500",
+        "border border-black text-black hover:bg-black hover:text-white focus:ring-gray-500",
       ghost: "text-black hover:bg-gray-100 focus:ring-gray-500",
     },
     blue: {
       filled: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
       outline:
-        "border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white focus:ring-blue-500",
+        "border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white focus:ring-blue-500",
       ghost: "text-blue-600 hover:bg-blue-50 focus:ring-blue-500",
     },
     green: {
       filled: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
       outline:
-        "border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white focus:ring-green-500",
+        "border border-green-600 text-green-600 hover:bg-green-600 hover:text-white focus:ring-green-500",
       ghost: "text-green-600 hover:bg-green-50 focus:ring-green-500",
     },
     red: {
       filled: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
       outline:
-        "border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white focus:ring-red-500",
+        "border border-red-600 text-red-600 hover:bg-red-600 hover:text-white focus:ring-red-500",
       ghost: "text-red-600 hover:bg-red-50 focus:ring-red-500",
     },
     gray: {
       filled: "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500",
       outline:
-        "border-2 border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white focus:ring-gray-500",
+        "border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white focus:ring-gray-500",
       ghost: "text-gray-600 hover:bg-gray-100 focus:ring-gray-500",
     },
   };

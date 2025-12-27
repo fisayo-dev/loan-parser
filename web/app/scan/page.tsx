@@ -1,10 +1,13 @@
 import Button from "@/components/field/Button";
 import Image from "next/image";
+import Link from "next/link";
 
 const ScanPage = () => {
   return (
     <div className="block">
-      <Button variant="outline" text="Back home" className="px-6 mb-6" />
+      <Link href="/">
+        <Button variant="outline" text="Back home" className="px-6 mb-6" />
+      </Link>
       <h1 className="text-xl lg:text-3xl font-bold mb-4">
         Scan your loans effortlessly
       </h1>
