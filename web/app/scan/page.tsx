@@ -15,12 +15,12 @@ import { useState } from "react";
 const ScanPage = () => {
   const [scanSubmitted, setScanSubmitted] = useState<
     "not-started" | "finished"
-  >("finished");
+  >("not-started")
   const [isScanning, setIsScanning] = useState(false);
   const [scanType, setScanType] = useState<"JSON" | "CSV">("JSON");
   return (
     <div className="grid gap-4">
-      <h2 className="text-xl lg:text-3xl text-center font-bold">
+      <h2 className="text-3xl lg:text-4xl mb-8 text-center font-bold">
         {scanSubmitted == "not-started"
           ? "Analyze your First Loan"
           : "Yay!! Your report is ready"}
@@ -186,11 +186,8 @@ const ScanPage = () => {
         //  Scan ui *
         <div className="block">
           <Link href="/">
-            <Button variant="outline" text="Back home" className="px-6 mb-6" />
+            <Button variant="outline" text="Back home" className="px-6 mb-4 lg:mb-0" />
           </Link>
-          <h1 className="text-xl lg:text-3xl font-bold mb-4">
-            Scan your loans effortlessly
-          </h1>
           <div className="py-4 h-[80vh] grid place-content-center border border-gray-300  max-w-2xl mx-auto rounded-2xl my-10">
             <div className="flex flex-col space-y-2 text-center items-center">
               <Image
