@@ -1,4 +1,5 @@
 import React from "react";
+import { Loader2 } from "lucide-react";
 
 const Button = ({
   text,
@@ -6,15 +7,21 @@ const Button = ({
   variant = "filled",
   color = "black",
   onClick,
+  loading = false,
+  disabled = false,
+  icon: Icon,
 }: {
   text: string;
   className?: string;
   variant?: "filled" | "outline" | "ghost";
   color?: "black" | "blue" | "green" | "red" | "gray";
   onClick?: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+  icon?: React.ComponentType<{ className?: string }>;
 }) => {
   const baseStyles =
-    "px-4 py-3 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+    "px-4 py-3 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
   const colorMap = {
     black: {
@@ -54,8 +61,14 @@ const Button = ({
   return (
     <button
       onClick={onClick}
+      disabled={disabled || loading}
       className={`${baseStyles} ${variantStyles} ${className}`}
     >
+      {loading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : Icon ? (
+        <Icon className="w-4 h-4" />
+      ) : null}
       {text}
     </button>
   );
