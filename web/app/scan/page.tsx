@@ -1,5 +1,4 @@
 import Button from "@/components/field/Button";
-import { File } from "lucide-react";
 import Image from "next/image";
 
 const ScanPage = () => {
