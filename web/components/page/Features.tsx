@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Button from "../field/Button";
+import Link from "next/link";
 
 const Features = () => {
   return (
@@ -10,7 +11,9 @@ const Features = () => {
             <h2 className="capitalize font-bold text-5xl lg:text-7xl lg:leading-19 mb-4">
               Unlimited Documents upload.
             </h2>
-            <Button text="Upload docs now" className="px-6 " />
+            <Link href="/scan">
+              <Button text="Upload docs now" className="px-6 " />
+            </Link>
           </div>
           <div className="flex md:justify-end">
             <Image
@@ -36,7 +39,9 @@ const Features = () => {
             <h2 className="font-bold text-5xl lg:text-7xl lg:leading-19 mb-4">
               Integrate CSV/JSON <br /> Data into Loan Software.
             </h2>
-            <Button text="Start integrating" className="px-6 " />
+            <Link href="/scan">
+              <Button text="Start integrating" className="px-6 " />
+            </Link>
           </div>
         </div>
         <div className="grid items-center grid-cols-1 gap-4 md:grid-cols-2">
@@ -44,7 +49,9 @@ const Features = () => {
             <h2 className="font-bold text-5xl lg:text-7xl lg:leading-19 mb-4">
               Get loan Breakdown & Risk Highlight.
             </h2>
-            <Button text="Get Breakdown" className="px-6 " />
+            <Link href="/scan">
+              <Button text="Get Breakdown" className="px-6 " />
+            </Link>
           </div>
           <div className="flex md:justify-end">
             <Image

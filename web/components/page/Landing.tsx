@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Button from "../field/Button";
 
 const Landing = () => {
@@ -12,7 +13,9 @@ const Landing = () => {
             AI-powered loan summary
           </p>
         </div>
-        <Button text="Start for free" className="lg:text-xl px-10" />
+        <Link href="/scan" className="mb-4 w-full">
+          <Button text="Start for free" className="lg:text-xl px-10" />
+        </Link>
       </div>
     </div>
   );

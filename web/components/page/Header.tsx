@@ -19,7 +19,9 @@ const Header = () => {
               Star on GitHub
             </button>
           </Link>
-          <Button text="Get Started" className="text-sm" />
+          <Link href="/scan">
+            <Button text="Get Started" className="text-sm" />
+          </Link>
         </div>
       </div>
     </div>
