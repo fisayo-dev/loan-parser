@@ -5,14 +5,12 @@ import (
 	"net/http"
 )
 
-func DecodeJSONRequest(responseStruct *struct{}, r *http.Request) error {
-	params := *responseStruct
-	// Create a new decode of the request body value
+func DecodeJSONRequest(responseStruct struct{}, r *http.Request) (struct{}, error ){
+	parameter := responseStruct
 	decoder := json.NewDecoder(r.Body)
-	// Decode the value into the struct
-	err := decoder.Decode(&params)
+	err := decoder.Decode(&parameter)
 	if err != nil {
-		return err
+		return struct{}{}, err
 	}
-	return nil
+	return parameter, nil
 }
