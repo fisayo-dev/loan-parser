@@ -44,6 +44,7 @@ func main() {
 	// Define routes
 	v1.Get("/health", handlers.HealthStatus)
 	v1.Head("/health", handlers.HealthStatus)
+	v1.Post("/scan-loan", handlers.ScanLoan)
 
 	// Mount base router to v1 router
 	router.Mount("/v1", v1)

@@ -7,7 +7,7 @@ import (
 	"github.com/fisayo-dev/parser/api/utils"
 )
 
-func scanLoan(w http.ResponseWriter, r *http.Request) {
+func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	type ScanParameters struct {
 		FileName string `json:"file_name"`
 		FileType string `json:"file_type"`
