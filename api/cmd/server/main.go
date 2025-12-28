@@ -6,46 +6,26 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/fisayo-dev/parser/api/internal/handlers"
+	"github.com/fisayo-dev/loan-parser/api/internal/routes"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	godotenv.Load("../../.env") // Load environment variables from .env file
-	port := os.Getenv("PORT") // Default port
+	godotenv.Load("../../.env")
+	port := os.Getenv("PORT") 
 
-	// Check if PORT is set in environment variables; else set port to 8080
 	if port == "" {
 		log.Printf("⚠️ PORT is not found in the environment, defaulting to 8080")
 		port = "8080"
 	}
-
 	
-	// Deifne a new router
 	router := chi.NewRouter()
-
-	// Add cors configuration to router
-	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"https://*", "http://*"},
-		AllowedMethods: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
-		AllowedHeaders: []string{"*"},
-		ExposedHeaders: []string{"Link"},
-		AllowCredentials: false,
-		MaxAge: 300,
-	}))
-
+	router.Use(routes.CORS())
 
 	// Version 1 router
 	v1 := chi.NewRouter()
-
-	// Define routes
-	v1.Get("/health", handlers.HealthStatus)
-	v1.Head("/health", handlers.HealthStatus)
-	v1.Post("/scan-loan", handlers.ScanLoan)
-
-	// Mount base router to v1 router
+	routes.Register(v1)
 	router.Mount("/v1", v1)
 
 	// Create the server - Only one instance that why we use &http.Server

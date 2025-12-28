@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/fisayo-dev/parser/api/internal/utils"
+	"github.com/fisayo-dev/loan-parser/api/internal/utils"
 )
 
 func ScanLoan(w http.ResponseWriter, r *http.Request) {

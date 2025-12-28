@@ -1,4 +1,4 @@
-module github.com/fisayo-dev/parser/api
+module github.com/fisayo-dev/loan-parser/api
 
 go 1.25
 
