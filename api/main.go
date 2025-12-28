@@ -48,13 +48,14 @@ func main() {
 	// Mount base router to v1 router
 	router.Mount("/v1", v1)
 
+	// Create the server - Only one instance that why we use &http.Server
 	server := &http.Server{
 		Handler: router,
 		Addr:    fmt.Sprintf(":%s", port),
 	}
 
 	log.Printf("Server starting on Port: %v", port)
-
+	
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
