@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,17 +23,7 @@ func main() {
 		port = "8080"
 	}
 
-	// Connect to database
-	dbURL := os.Getenv("DB_URL")
-	if dbURL == "" {
-		log.Fatal("DB_URL is not found in the environment")
-	}
-
-	_, err := sql.Open("postgres", dbURL)
-	if err != nil {
-		log.Fatal("Can't connect to databases:", err)
-	}
-
+	
 	// Deifne a new router
 	router := chi.NewRouter()
 
@@ -66,7 +55,7 @@ func main() {
 
 	log.Printf("Server starting on Port: %v", port)
 
-	err = server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
