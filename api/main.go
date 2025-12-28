@@ -1,8 +1,9 @@
 package main
 
 import (
-	"database/sql"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/fisayo-dev/parser/api/handlers"
@@ -22,17 +23,7 @@ func main() {
 		port = "8080"
 	}
 
-	// Connect to database
-	dbURL := os.Getenv("DB_URL")
-	if dbURL == "" {
-		log.Fatal("DB_URL is not found in the environment")
-	}
-
-	_, err := sql.Open("postgres", dbURL)
-	if err != nil {
-		log.Fatal("Can't connect to databases:", err)
-	}
-
+	
 	// Deifne a new router
 	router := chi.NewRouter()
 
@@ -53,4 +44,20 @@ func main() {
 	// Define routes
 	v1.Get("/health", handlers.HealthStatus)
 	v1.Head("/health", handlers.HealthStatus)
+
+	// Mount base router to v1 router
+	router.Mount("/v1", v1)
+
+	// Create the server - Only one instance that why we use &http.Server
+	server := &http.Server{
+		Handler: router,
+		Addr:    fmt.Sprintf(":%s", port),
+	}
+
+	log.Printf("Server starting on Port: %v", port)
+	
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
