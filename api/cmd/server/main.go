@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/fisayo-dev/loan-parser/api/internal/config"
 	"github.com/fisayo-dev/loan-parser/api/internal/routes"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
@@ -21,7 +22,7 @@ func main() {
 	}
 	
 	router := chi.NewRouter()
-	router.Use(routes.CORS())
+	router.Use(config.CORS())
 
 	// Version 1 router
 	v1 := chi.NewRouter()
