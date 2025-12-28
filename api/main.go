@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/fisayo-dev/parser/api/handlers"
@@ -53,4 +55,19 @@ func main() {
 	// Define routes
 	v1.Get("/health", handlers.HealthStatus)
 	v1.Head("/health", handlers.HealthStatus)
+
+	// Mount base router to v1 router
+	router.Mount("/v1", v1)
+
+	server := &http.Server{
+		Handler: router,
+		Addr:    fmt.Sprintf(":%s", port),
+	}
+
+	log.Printf("Server starting on Port: %v", port)
+
+	err = server.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
