@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/fisayo-dev/parser/api/handlers"
+	"github.com/fisayo-dev/parser/api/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	godotenv.Load("../../.env") // Load environment variables from .env file
 	port := os.Getenv("PORT") // Default port
 
 	// Check if PORT is set in environment variables; else set port to 8080
@@ -44,6 +44,7 @@ func main() {
 	// Define routes
 	v1.Get("/health", handlers.HealthStatus)
 	v1.Head("/health", handlers.HealthStatus)
+	v1.Post("/scan-loan", handlers.ScanLoan)
 
 	// Mount base router to v1 router
 	router.Mount("/v1", v1)

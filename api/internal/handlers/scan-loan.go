@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/fisayo-dev/parser/api/utils"
+	"github.com/fisayo-dev/parser/api/internal/utils"
 )
 
-func scanLoan(w http.ResponseWriter, r *http.Request) {
+func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	type ScanParameters struct {
 		FileName string `json:"file_name"`
 		FileType string `json:"file_type"`
@@ -22,4 +22,6 @@ func scanLoan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// params is now usable
+
+	// Make OPENAI API Call here with params
 }
