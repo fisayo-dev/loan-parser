@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/fisayo-dev/parser/api/handlers"
+	"github.com/fisayo-dev/parser/api/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	godotenv.Load("../../.env") // Load environment variables from .env file
 	port := os.Getenv("PORT") // Default port
 
 	// Check if PORT is set in environment variables; else set port to 8080

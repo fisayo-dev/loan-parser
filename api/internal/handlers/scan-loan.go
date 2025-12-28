@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/fisayo-dev/parser/api/utils"
+	"github.com/fisayo-dev/parser/api/internal/utils"
 )
 
 func ScanLoan(w http.ResponseWriter, r *http.Request) {
@@ -22,4 +22,6 @@ func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// params is now usable
+
+	// Make OPENAI API Call here with params
 }
