@@ -3,6 +3,7 @@ import Button from "@/components/field/Button";
 import {
   Clipboard,
   Download,
+  FileIcon,
   Lightbulb,
   Repeat,
   ScanSearch,
@@ -20,41 +21,44 @@ const ScanPage = () => {
   >("not-started");
   const [isScanning, setIsScanning] = useState(false);
   const [scanType, setScanType] = useState<"JSON" | "CSV">("JSON");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [scanResult, setScanResult] = useState<LoanResult | null>(null);
   const [error, setError] = useState<string>("");
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const handleScan = async () => {
+    if (!selectedFile) {
+      toast.error("Please select a file first");
+      return;
+    }
 
     setIsScanning(true);
     setError("");
 
     try {
-      // Read file as text
-      const fileText = await file.text();
+      const fileText = await selectedFile.text();
 
-      // Call API using the service layer
       const result = await loanService.scanLoan({
-        file_name: file.name,
-        file_type: file.type,
+        file_name: selectedFile.name,
+        file_type: selectedFile.type,
         file_data: fileText,
       });
 
       setScanResult(result);
       setScanSubmitted("finished");
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "An error occurred while scanning the loan";
-      toast.error(`Error: ${errorMessage}`);
-      console.error("Error scanning loan:", err);
+      toast.error(err.message || "Failed to scan loan");
+      console.error(err);
     } finally {
       setIsScanning(false);
     }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setSelectedFile(file);
+    setError("");
   };
 
   const handleRescan = () => {
@@ -270,22 +274,35 @@ const ScanPage = () => {
             <input
               type="file"
               accept=".txt,.pdf,.doc,.docx"
-              onChange={handleFileUpload}
+              onChange={handleFileSelect}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               disabled={isScanning}
             />
             <div className="flex flex-col space-y-2 text-center items-center pointer-events-none">
-              <Image
-                src="/assets/file_docs.jpg"
-                alt="Document docs"
-                height={100}
-                width={100}
-                className="h-50 w-50"
-              />
-              <div>
-                <p>Upload documents OR</p>
-                <p>Drag & Drop them</p>
-              </div>
+              {!selectedFile ? (
+                <>
+                  <Image
+                    src="/assets/file_docs.jpg"
+                    alt="Document docs"
+                    height={100}
+                    width={100}
+                    className="h-50 w-50"
+                  />
+                  <div>
+                    <p>Upload a document OR</p>
+                    <p>Drag & Drop them</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-sm p-4 rounded-2xl bg-gray-100">
+                    <div className="flex items-center gap-2">
+                      <FileIcon className="h-5 w-5" />
+                      <p>{selectedFile?.name}</p>
+                    </div>
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
@@ -302,6 +319,7 @@ const ScanPage = () => {
                 <Button
                   variant="outline"
                   text="Upload Documents"
+                  onClick={handleScan}
                   className="px-6 mb-10"
                 />
               </label>
@@ -310,7 +328,7 @@ const ScanPage = () => {
               id="file-upload"
               type="file"
               accept=".txt,.pdf,.doc,.docx"
-              onChange={handleFileUpload}
+              onChange={handleFileSelect}
               className="hidden"
               disabled={isScanning}
             />

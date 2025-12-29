@@ -1,10 +1,20 @@
-// lib/api/loanService.ts
 import axiosInstance from "@/config/axios";
 
 export interface ScanLoanPayload {
   file_name: string;
   file_type: string;
   file_data: string;
+}
+
+export interface ApiError {
+  code: string;
+  message: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: ApiError;
 }
 
 export interface LoanResult {
@@ -15,46 +25,41 @@ export interface LoanResult {
   total_payment: string;
   late_fee: string;
   prepayment_penalty: boolean;
+
   borrower: {
     name: string;
     address: string;
   };
+
   lender: {
     name: string;
     address: string;
   };
+
   ai_summary: string;
   risk_highlights: string;
 }
 
 export const loanService = {
-  // Scan loan document
-  scanLoan: async (payload: ScanLoanPayload): Promise<LoanResult> => {
+  scanLoan: async <T>(payload: ScanLoanPayload): Promise<LoanResult> => {
     try {
-      const response = await axiosInstance.post<LoanResult>(
+      const res = await axiosInstance.post<ApiResponse<T>>(
         "/scan-loan",
         payload
       );
-      return response.data;
-    } catch (err: any) {
-      // Extract error message from server response
-      const errorMessage =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        err.message ||
-        "An unknown error occurred";
 
-      // Throw a new error with the server message
-      throw new Error(errorMessage);
+      if (!res.data.success) {
+        throw new Error(res.data.error?.message || "Request failed");
+      }
+
+      return res.data.data as LoanResult;
+    } catch (err: any) {
+      const message =
+        err.response?.data?.error?.message || err.message || "Network error";
+
+      throw new Error(message);
     }
   },
-
-  // Add more API methods here as needed
-  // Example:
-  // getLoanHistory: async (): Promise<LoanResult[]> => {
-  //   const response = await axiosInstance.get<LoanResult[]>('/loans');
-  //   return response.data;
-  // },
 };
 
 export default loanService;
