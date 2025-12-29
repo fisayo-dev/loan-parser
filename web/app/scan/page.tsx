@@ -11,26 +11,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-
-interface LoanResult {
-  loan_amount: string;
-  interest_rate: string;
-  loan_term_months: string;
-  monthly_payment: string;
-  total_payment: string;
-  late_fee: string;
-  prepayment_penalty: boolean;
-  borrower: {
-    name: string;
-    address: string;
-  };
-  lender: {
-    name: string;
-    address: string;
-  };
-  ai_summary: string;
-  risk_highlights: string;
-}
+import loanService, { LoanResult } from "@/lib/api/loanService";
+import { toast } from "sonner";
 
 const ScanPage = () => {
   const [scanSubmitted, setScanSubmitted] = useState<
@@ -54,31 +36,21 @@ const ScanPage = () => {
       // Read file as text
       const fileText = await file.text();
 
-      // Prepare payload
-      const payload = {
+      // Call API using the service layer
+      const result = await loanService.scanLoan({
         file_name: file.name,
         file_type: file.type,
         file_data: fileText,
-      };
-
-      // Call your Go API
-      const response = await fetch(`${process.env.BACKEND_URL}/v1/scan-loan`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-
-      const result: LoanResult = await response.json();
       setScanResult(result);
       setScanSubmitted("finished");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "An error occurred while scanning the loan";
+      toast.error(`Error: ${errorMessage}`);
       console.error("Error scanning loan:", err);
     } finally {
       setIsScanning(false);
@@ -118,8 +90,12 @@ const ScanPage = () => {
         ? JSON.stringify(scanResult, null, 2)
         : convertToCSV(scanResult);
 
-    await navigator.clipboard.writeText(dataStr);
-    alert("Copied to clipboard!");
+    try {
+      await navigator.clipboard.writeText(dataStr);
+      alert("Copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
   };
 
   const convertToCSV = (data: LoanResult): string => {
@@ -163,7 +139,7 @@ const ScanPage = () => {
       </h2>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg max-w-2xl mx-auto">
           <p className="font-bold">Error:</p>
           <p>{error}</p>
         </div>
@@ -314,13 +290,21 @@ const ScanPage = () => {
           </div>
 
           <div className="grid">
-            {isScanning && (
+            {isScanning ? (
               <Button
                 variant="outline"
                 text="Scanning..."
                 loading={true}
                 className="px-6 mb-10 mx-auto"
               />
+            ) : (
+              <label htmlFor="file-upload" className="mx-auto">
+                <Button
+                  variant="outline"
+                  text="Upload Documents"
+                  className="px-6 mb-10"
+                />
+              </label>
             )}
             <input
               id="file-upload"
