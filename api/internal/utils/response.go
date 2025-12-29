@@ -6,33 +6,47 @@ import (
 	"net/http"
 )
 
-func RespondWithError(w http.ResponseWriter, code int, msg string) {
-	if code > 499{ 
-		log.Println("Responding with 5XX error:", msg)
-	}
-
-	type errResponse struct {
-		Error string `json:"error"`
-	}
-
-	RespondWithJSON(w, code, errResponse{
-		Error: msg,
-	})
-
+type ErrorBody struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
 
-func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	// Convert payload to byte (binary)
-	data, err := json.Marshal(payload)
-	//  If eror occurs log error
-	 if err != nil {
-		log.Printf("Failed to marshal json response: %v", payload)
-		w.WriteHeader(500)
-		return
-	 }
+type ErrorResponse struct {
+	Success bool      `json:"success"`
+	Error   ErrorBody `json:"error"`
+}
 
-	//  Else respond with the header and data
-	 w.Header().Add("Content-Type", "application/json")
-	 w.WriteHeader(code)
-	 w.Write(data)
+type SuccessResponse struct {
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data"`
+}
+
+func RespondJSON(w http.ResponseWriter, status int, payload interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	if err := json.NewEncoder(w).Encode(payload); err != nil {
+		log.Println("failed to write response:", err)
+	}
+}
+
+func RespondError(w http.ResponseWriter, status int, code, message string) {
+	if status >= 500 {
+		log.Printf("server error [%s]: %s\n", code, message)
+	}
+
+	RespondJSON(w, status, ErrorResponse{
+		Success: false,
+		Error: ErrorBody{
+			Code:    code,
+			Message: message,
+		},
+	})
+}
+
+func RespondSuccess(w http.ResponseWriter, status int, data interface{}) {
+	RespondJSON(w, status, SuccessResponse{
+		Success: true,
+		Data:    data,
+	})
 }

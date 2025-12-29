@@ -7,7 +7,9 @@ import (
 )
 
 func HealthStatus(w http.ResponseWriter, r *http.Request) {
-	utils.RespondWithJSON(w, http.StatusOK, map[string]string{
-		"message": "Applicaiton is successfully running",
-	})
+	utils.RespondSuccess(w, http.StatusOK, 
+		map[string]string{
+			"message":"Server is healthy and functioning",
+		},
+	)
 }

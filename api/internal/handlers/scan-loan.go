@@ -1,34 +1,47 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fisayo-dev/loan-parser/api/internal/services"
 	"github.com/fisayo-dev/loan-parser/api/internal/utils"
 )
 
+type ScanParameters struct {
+	FileName string `json:"file_name"`
+	FileType string `json:"file_type"`
+	FileData string `json:"file_data"`
+}
+
 func ScanLoan(w http.ResponseWriter, r *http.Request) {
-	type ScanParameters struct {
-		FileName string `json:"file_name"`
-		FileType string `json:"file_type"`
-		FileData string `json:"file_data"`
-	}
+	var params ScanParameters
 
-	params := ScanParameters{}
 	if err := utils.DecodeJSONRequest(r, &params); err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
+		utils.RespondError(
+			w,
+			http.StatusBadRequest,
+			"INVALID_JSON",
+			"Invalid request payload",
+		)
 		return
 	}
 
-	// Call scan loan service
-	result, err := services.ScanLoanService(w,params.FileName,params.FileType,params.FileData)
+	result, err := services.ScanLoanService(
+		w,
+		params.FileName,
+		params.FileType,
+		params.FileData,
+	)
+
 	if err != nil {
-		utils.RespondWithError(w,400,fmt.Sprintf("Error occured whie trying to scan loan: %v", err))
-		fmt.Printf("Error occured whie trying to scan loan: %v", err)
+		utils.RespondError(
+			w,
+			http.StatusUnprocessableEntity,
+			"SCAN_FAILED",
+			"Failed to scan loan document",
+		)
 		return
 	}
 
-	utils.RespondWithJSON(w, 201, result)
-	
+	utils.RespondSuccess(w, http.StatusCreated, result)
 }
