@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/fisayo-dev/loan-parser/api/internal/services"
@@ -34,6 +35,7 @@ func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
+		fmt.Printf("Error: %v", err)
 		utils.RespondError(
 			w,
 			http.StatusUnprocessableEntity,
