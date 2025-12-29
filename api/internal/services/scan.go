@@ -50,7 +50,7 @@ func ScanLoanService(
 
 	// Request payload (Chat Completions API)
 	requestBody := map[string]interface{}{
-		"model": "gpt-4",
+		"model": "gpt-4.1",
 		"messages": []map[string]interface{}{
 			{
 				"role": "system",

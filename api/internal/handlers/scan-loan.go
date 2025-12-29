@@ -25,6 +25,7 @@ func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	result, err := services.ScanLoanService(w,params.FileName,params.FileType,params.FileData)
 	if err != nil {
 		utils.RespondWithError(w,400,fmt.Sprintf("Error occured whie trying to scan loan: %v", err))
+		fmt.Printf("Error occured whie trying to scan loan: %v", err)
 		return
 	}
 
