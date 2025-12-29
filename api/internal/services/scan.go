@@ -11,14 +11,28 @@ import (
 )
 
 type LoanExtractionResult struct {
-	Borrower      string   `json:"borrower"`
-	Lenders       []string `json:"lenders"`
-	LoanAmount    string   `json:"loan_amount"`
-	InterestRate  string   `json:"interest_rate"`
-	IssueDate     string   `json:"issue_date"`
-	MaturityDate  string   `json:"maturity_date"`
+	LoanAmount         string `json:"loan_amount"`
+	InterestRate       string `json:"interest_rate"`
+	LoanTermMonths     string `json:"loan_term_months"`
+	MonthlyPayment     string `json:"monthly_payment"`
+	TotalPayment       string `json:"total_payment"`
+	LateFee            string `json:"late_fee"`
+	PrepaymentPenalty  bool   `json:"prepayment_penalty"`
+	Borrower           BorrowerInfo `json:"borrower"`
+	Lender             LenderInfo   `json:"lender"`
+	AISummary          string `json:"ai_summary"`
+	RiskHighlights     string `json:"risk_highlights"`
 }
 
+type BorrowerInfo struct {
+	Name    string `json:"name"`
+	Address string `json:"address"`
+}
+
+type LenderInfo struct {
+	Name    string `json:"name"`
+	Address string `json:"address"`
+}
 
 func ScanLoanService(
 	w http.ResponseWriter,
@@ -27,56 +41,56 @@ func ScanLoanService(
 	fileData string,
 ) (*LoanExtractionResult, error) {
 
-	// Get open ai key
-	openAIURL := "https://api.openai.com/v1/responses"
+	// Get OpenAI key
+	openAIURL := "https://api.openai.com/v1/chat/completions"
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		return nil, fmt.Errorf("OPENAI_API_KEY not set")
 	}
 
-	// Request payload (Responses API)
+	// Request payload (Chat Completions API)
 	requestBody := map[string]interface{}{
-		"model": "gpt-4.1",
-		"input": []map[string]interface{}{
+		"model": "gpt-4",
+		"messages": []map[string]interface{}{
 			{
 				"role": "system",
-				"content": []map[string]string{
-					{
-						"type": "text",
-						"text": `
-You are a loan agreement extractor.
-Return ONLY valid JSON in this schema:
+				"content": `You are a loan agreement extractor and analyzer.
+Extract all relevant information from the loan document and return ONLY valid JSON in this exact schema:
 
 {
-  "borrower": string,
-  "lenders": string[],
-  "loan_amount": string,
-  "interest_rate": string,
-  "issue_date": string,
-  "maturity_date": string
-}
-`,
-					},
-				},
+  "loan_amount": "string (e.g., '10000')",
+  "interest_rate": "string (e.g., '0.24')",
+  "loan_term_months": "string (e.g., '36')",
+  "monthly_payment": "string (e.g., '322.74')",
+  "total_payment": "string (e.g., '11618.64')",
+  "late_fee": "string (e.g., '25')",
+  "prepayment_penalty": boolean,
+  "borrower": {
+    "name": "string",
+    "address": "string"
+  },
+  "lender": {
+    "name": "string",
+    "address": "string"
+  },
+  "ai_summary": "string (2-3 paragraph summary of the loan agreement)",
+  "risk_highlights": "string (numbered list of key risks and concerns)"
+}`,
 			},
 			{
 				"role": "user",
-				"content": []map[string]string{
-					{
-						"type": "text",
-						"text": fileData,
-					},
-				},
+				"content": fileData,
 			},
 		},
+		"temperature": 0.1,
 	}
-	
+
 	jsonBody, err := json.Marshal(requestBody)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create a request
+	// Create request
 	req, err := http.NewRequest("POST", openAIURL, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		return nil, err
@@ -84,7 +98,7 @@ Return ONLY valid JSON in this schema:
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 
-	// Create client and do request
+	// Execute request
 	client := &http.Client{Timeout: 60 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -98,31 +112,30 @@ Return ONLY valid JSON in this schema:
 	}
 
 	var openAIResponse struct {
-		Output []struct {
-			Content []struct {
-				Text string `json:"text"`
-			} `json:"content"`
-		} `json:"output"`
+		Choices []struct {
+			Message struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&openAIResponse); err != nil {
 		return nil, err
 	}
 
-	// Check if open AI returned an empty response
-	if len(openAIResponse.Output) == 0 ||
-		len(openAIResponse.Output[0].Content) == 0 {
+	// Check for empty response
+	if len(openAIResponse.Choices) == 0 {
 		return nil, fmt.Errorf("empty response from OpenAI")
 	}
 
-	// Parse the JSON returned by the model
+	// Parse the JSON from the model
 	var result LoanExtractionResult
 	err = json.Unmarshal(
-		[]byte(openAIResponse.Output[0].Content[0].Text),
+		[]byte(openAIResponse.Choices[0].Message.Content),
 		&result,
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error parsing OpenAI response: %v", err)
 	}
 
 	return &result, nil
