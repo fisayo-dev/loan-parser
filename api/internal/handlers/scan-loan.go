@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fisayo-dev/loan-parser/api/internal/services"
 	"github.com/fisayo-dev/loan-parser/api/internal/utils"
 )
 
@@ -15,13 +16,18 @@ func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	params := ScanParameters{}
-
 	if err := utils.DecodeJSONRequest(r, &params); err != nil {
 		utils.RespondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
 		return
 	}
 
-	// params is now usable
+	// Call scan loan service
+	result, err := services.ScanLoanService(w,params.FileName,params.FileType,params.FileData)
+	if err != nil {
+		utils.RespondWithError(w,400,fmt.Sprintf("Error occured whie trying to scan loan: %v", err))
+		return
+	}
 
-	// Make OPENAI API Call here with params
+	utils.RespondWithJSON(w, 201, result)
+	
 }
