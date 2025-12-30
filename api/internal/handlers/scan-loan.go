@@ -4,24 +4,46 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fisayo-dev/loan-parser/api/internal/services"
 	"github.com/fisayo-dev/loan-parser/api/internal/utils"
 )
 
-func ScanLoan(w http.ResponseWriter, r *http.Request) {
-	type ScanParameters struct {
-		FileName string `json:"file_name"`
-		FileType string `json:"file_type"`
-		FileData string `json:"file_data"`
-	}
+type ScanParameters struct {
+	FileName string `json:"file_name"`
+	FileType string `json:"file_type"`
+	FileData string `json:"file_data"`
+}
 
-	params := ScanParameters{}
+func ScanLoan(w http.ResponseWriter, r *http.Request) {
+	var params ScanParameters
 
 	if err := utils.DecodeJSONRequest(r, &params); err != nil {
-		utils.RespondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
+		utils.RespondError(
+			w,
+			http.StatusBadRequest,
+			"INVALID_JSON",
+			"Invalid request payload",
+		)
 		return
 	}
 
-	// params is now usable
+	result, err := services.ScanLoanService(
+		w,
+		params.FileName,
+		params.FileType,
+		params.FileData,
+	)
 
-	// Make OPENAI API Call here with params
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		utils.RespondError(
+			w,
+			http.StatusUnprocessableEntity,
+			"SCAN_FAILED",
+			"Failed to scan loan document",
+		)
+		return
+	}
+
+	utils.RespondSuccess(w, http.StatusCreated, result)
 }

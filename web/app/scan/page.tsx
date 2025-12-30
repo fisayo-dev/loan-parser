@@ -3,6 +3,7 @@ import Button from "@/components/field/Button";
 import {
   Clipboard,
   Download,
+  FileIcon,
   Lightbulb,
   Repeat,
   ScanSearch,
@@ -11,46 +12,172 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import loanService, { LoanResult } from "@/lib/api/loanService";
+import { toast } from "sonner";
 
 const ScanPage = () => {
   const [scanSubmitted, setScanSubmitted] = useState<
     "not-started" | "finished"
-  >("not-started")
+  >("not-started");
   const [isScanning, setIsScanning] = useState(false);
   const [scanType, setScanType] = useState<"JSON" | "CSV">("JSON");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [scanResult, setScanResult] = useState<LoanResult | null>(null);
+  const [error, setError] = useState<string>("");
+
+  const handleScan = async () => {
+    if (!selectedFile) {
+      toast.error("Please select a file first");
+      return;
+    }
+
+    setIsScanning(true);
+    setError("");
+
+    try {
+      const fileText = await selectedFile.text();
+
+      const result = await loanService.scanLoan({
+        file_name: selectedFile.name,
+        file_type: selectedFile.type,
+        file_data: fileText,
+      });
+
+      setScanResult(result);
+      setScanSubmitted("finished");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to scan loan");
+      console.error(err);
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setSelectedFile(file);
+    setError("");
+  };
+
+  const handleRescan = () => {
+    setScanSubmitted("not-started");
+    setScanResult(null);
+    setError("");
+  };
+
+  const handleDownload = () => {
+    if (!scanResult) return;
+
+    const dataStr =
+      scanType === "JSON"
+        ? JSON.stringify(scanResult, null, 2)
+        : convertToCSV(scanResult);
+
+    const blob = new Blob([dataStr], {
+      type: scanType === "JSON" ? "application/json" : "text/csv",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `loan-analysis.${scanType.toLowerCase()}`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = async () => {
+    if (!scanResult) return;
+
+    const dataStr =
+      scanType === "JSON"
+        ? JSON.stringify(scanResult, null, 2)
+        : convertToCSV(scanResult);
+
+    try {
+      await navigator.clipboard.writeText(dataStr);
+      alert("Copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  const convertToCSV = (data: LoanResult): string => {
+    const headers = [
+      "Loan Amount",
+      "Interest Rate",
+      "Loan Term (Months)",
+      "Monthly Payment",
+      "Total Payment",
+      "Late Fee",
+      "Prepayment Penalty",
+      "Borrower Name",
+      "Borrower Address",
+      "Lender Name",
+      "Lender Address",
+    ].join(",");
+
+    const values = [
+      data.loan_amount,
+      data.interest_rate,
+      data.loan_term_months,
+      data.monthly_payment,
+      data.total_payment,
+      data.late_fee,
+      data.prepayment_penalty,
+      data.borrower.name,
+      `"${data.borrower.address}"`,
+      data.lender.name,
+      `"${data.lender.address}"`,
+    ].join(",");
+
+    return `${headers}\n${values}`;
+  };
+
   return (
     <div className="grid gap-4">
       <h2 className="text-3xl lg:text-4xl mb-8 text-center font-bold">
-        {scanSubmitted == "not-started"
+        {scanSubmitted === "not-started"
           ? "Analyze your First Loan"
           : "Yay!! Your report is ready"}
       </h2>
-      {scanSubmitted == "finished" && (
-        // Results ui
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg max-w-2xl mx-auto">
+          <p className="font-bold">Error:</p>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {scanSubmitted === "finished" && scanResult && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10">
           <div className="lg:col-span-7">
-            <div className="grid gap-8 ">
+            <div className="grid gap-8">
               <div className="flex items-center justify-between border border-gray-300 rounded-2xl p-4">
-                <div className="inline-flex items-center gap-4 ">
+                <div className="inline-flex items-center gap-4">
                   <ScanText className="text-green-600" />
-                  <h2>Fair Money Loan Document.</h2>
+                  <h2>{scanResult.lender.name} Loan Document</h2>
                 </div>
-                <div className="inline-flex-items-center space-x-2">
+                <div className="inline-flex items-center space-x-2">
                   <Button
                     variant="outline"
                     text="Re-scan"
                     className="text-sm"
                     icon={Repeat}
+                    onClick={handleRescan}
                   />
                 </div>
               </div>
+
               <div className="block lg:hidden border border-gray-300 rounded-2xl p-4">
                 <Button
                   text="Download CSV/JSON"
                   className="text-sm w-full"
                   icon={Download}
+                  onClick={handleDownload}
                 />
               </div>
+
               <div className="grid gap-8 border border-gray-300 rounded-2xl p-4">
                 <div>
                   <div className="inline-flex items-center gap-4">
@@ -59,13 +186,7 @@ const ScanPage = () => {
                   </div>
                   <div className="mt-2">
                     <p className="w-full overflow-x-auto max-h-96 bg-gray-50 p-4 rounded-lg text-sm wrap-break-words whitespace-pre-wrap">
-                      This Loan Agreement (the &quot;Agreement&quot;) is made
-                      and entered into as of this 1st day of January, 2023, by
-                      and between Fair Money Lending, Inc., a Delaware
-                      corporation with its principal place of business at 123
-                      Finance Avenue, New York, NY 10001 (&quot;Lender&quot;),
-                      and John Doe, residing at 456 Main Street, Springfield, IL
-                      62701 (&quot;Borrower&quot;).
+                      {scanResult.ai_summary}
                     </p>
                   </div>
                 </div>
@@ -77,64 +198,35 @@ const ScanPage = () => {
                   </div>
                   <div className="mt-2">
                     <p className="w-full overflow-x-auto max-h-96 bg-gray-50 p-4 rounded-lg text-sm wrap-break-words whitespace-pre-wrap">
-                      1. High Interest Rate: The loan carries an annual
-                      percentage rate (APR) of 24%, which is significantly
-                      higher than the average market rate for similar loans.
-                      This could lead to substantial interest costs over the
-                      life of the loan. 1. High Interest Rate: The loan carries
-                      an annual percentage rate (APR) of 24%, which is
-                      significantly higher than the average market rate for
-                      similar loans. This could lead to substantial interest
-                      costs over the life of the loan. 1. High Interest Rate:
-                      The loan carries an annual percentage rate (APR) of 24%,
-                      which is significantly higher than the average market rate
-                      for similar loans. This could lead to substantial interest
-                      costs over the life of the loan. 1. High Interest Rate:
-                      The loan carries an annual percentage rate (APR) of 24%,
-                      which is significantly higher than the average market rate
-                      for similar loans. This could lead to substantial interest
-                      costs over the life of the loan. 1. High Interest Rate:
-                      The loan carries an annual percentage rate (APR) of 24%,
-                      which is significantly higher than the average market rate
-                      for similar loans. This could lead to substantial interest
-                      costs over the life of the loan. 1. High Interest Rate:
-                      The loan carries an annual percentage rate (APR) of 24%,
-                      which is significantly higher than the average market rate
-                      for similar loans. This could lead to substantial interest
-                      costs over the life of the loan. 1. High Interest Rate:
-                      The loan carries an annual percentage rate (APR) of 24%,
-                      which is significantly higher than the average market rate
-                      for similar loans. This could lead to substantial interest
-                      costs over the life of the loan. 1. High Interest Rate:
-                      The loan carries an annual percentage rate (APR) of 24%,
-                      which is significantly higher than the average market rate
-                      for similar loans. This could lead to substantial interest
-                      costs over the life of the loan.
+                      {scanResult.risk_highlights}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="lg:col-span-5 ">
+
+          <div className="lg:col-span-5">
             <div className="grid gap-8">
               <div className="hidden lg:block border border-gray-300 rounded-2xl p-4">
                 <Button
                   text="Download CSV/JSON"
                   className="text-sm w-full"
                   icon={Download}
+                  onClick={handleDownload}
                 />
               </div>
+
               <div className="border border-gray-300 rounded-2xl p-4">
                 <div className="grid gap-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      {["JSON", "CSV"].map((type, index) => (
+                      {(["JSON", "CSV"] as const).map((type) => (
                         <p
-                          key={index}
+                          key={type}
                           onClick={() => setScanType(type)}
                           className={`cursor-pointer ${
-                            scanType == type
+                            scanType === type
                               ? "font-bold border-b-2"
                               : "text-black/80 hover:text-black"
                           }`}
@@ -143,36 +235,21 @@ const ScanPage = () => {
                         </p>
                       ))}
                     </div>
-                    <div className="cursor-pointer hover:bg-gray-100 rounded-lg p-2">
-                      <Clipboard className="h-5 w-5"/>
+                    <div
+                      className="cursor-pointer hover:bg-gray-100 rounded-lg p-2"
+                      onClick={handleCopy}
+                    >
+                      <Clipboard className="h-5 w-5" />
                     </div>
                   </div>
                   <div>
-                    {scanType == "JSON" ? (
-                      <pre className="w-full overflow-x-auto max-h-96 bg-gray-50 p-4 rounded-lg text-sm break-words whitespace-pre-wrap">
-                        {`{
-"loan_amount": 10000,
-"interest_rate": 0.24,
-"loan_term_months": 36,
-"monthly_payment": 322.74,
-"total_payment": 11618.64,
-"late_fee": 25,
-"prepayment_penalty": false,
-"borrower": {
-  "name": "John Doe",
-  "address": "456 Main Street, Springfield, IL 62701"
-},
-"lender": {
-  "name": "Fair Money Lending, Inc.",
-  "address": "123 Finance Avenue, New York, NY 10001"
-}
-}`}
+                    {scanType === "JSON" ? (
+                      <pre className="w-full overflow-x-auto max-h-96 bg-gray-50 p-4 rounded-lg text-sm wrap-break-words whitespace-pre-wrap">
+                        {JSON.stringify(scanResult, null, 2)}
                       </pre>
                     ) : (
                       <pre className="overflow-x-auto max-h-96 bg-gray-50 p-4 rounded-lg text-sm wrap-break-words whitespace-pre-wrap">
-                        {`Loan Amount,Interest Rate,Loan Term (Months),Monthly Payment,Total Payment,Late Fee,Prepayment Penalty,Borrower Name,Borrower Address,Lender Name,Lender Address
-10000,0.24,36,322.74,11618.64,25,false,John Doe,"456 Main Street, Springfield, IL 62701",Fair Money Lending, Inc.,"123 Finance Avenue, New York, NY 10001"
-`}
+                        {convertToCSV(scanResult)}
                       </pre>
                     )}
                   </div>
@@ -182,27 +259,53 @@ const ScanPage = () => {
           </div>
         </div>
       )}
-      {scanSubmitted == "not-started" && (
-        //  Scan ui *
+
+      {scanSubmitted === "not-started" && (
         <div className="block">
           <Link href="/">
-            <Button variant="outline" text="Back home" className="px-6 mb-4 lg:mb-0" />
+            <Button
+              variant="outline"
+              text="Back home"
+              className="px-6 mb-4 lg:mb-0"
+            />
           </Link>
-          <div className="py-4 h-[80vh] grid place-content-center border border-gray-300  max-w-2xl mx-auto rounded-2xl my-10">
-            <div className="flex flex-col space-y-2 text-center items-center">
-              <Image
-                src="/assets/file_docs.jpg"
-                alt="Document docs"
-                height={100}
-                width={100}
-                className="h-50 w-50"
-              />
-              <div>
-                <p>Upload documents OR</p>
-                <p>Drag & Drop them</p>
-              </div>
+
+          <div className="py-4 h-[80vh] grid place-content-center border border-gray-300 max-w-2xl mx-auto rounded-2xl my-10 relative">
+            <input
+              type="file"
+              accept=".txt,.pdf,.doc,.docx"
+              onChange={handleFileSelect}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              disabled={isScanning}
+            />
+            <div className="flex flex-col space-y-2 text-center items-center pointer-events-none">
+              {!selectedFile ? (
+                <>
+                  <Image
+                    src="/assets/file_docs.jpg"
+                    alt="Document docs"
+                    height={100}
+                    width={100}
+                    className="h-50 w-50"
+                  />
+                  <div>
+                    <p>Upload a document OR</p>
+                    <p>Drag & Drop them</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-sm p-4 rounded-2xl bg-gray-100">
+                    <div className="flex items-center gap-2">
+                      <FileIcon className="h-5 w-5" />
+                      <p>{selectedFile?.name}</p>
+                    </div>
+                  </span>
+                </>
+              )}
             </div>
           </div>
+
           <div className="grid">
             {isScanning ? (
               <Button
@@ -212,12 +315,23 @@ const ScanPage = () => {
                 className="px-6 mb-10 mx-auto"
               />
             ) : (
-              <Button
-                variant="outline"
-                text="Upload Documents"
-                className="px-6 mb-10 mx-auto"
-              />
+              <label htmlFor="file-upload" className="mx-auto">
+                <Button
+                  variant="outline"
+                  text="Upload Documents"
+                  onClick={handleScan}
+                  className="px-6 mb-10"
+                />
+              </label>
             )}
+            <input
+              id="file-upload"
+              type="file"
+              accept=".txt,.pdf,.doc,.docx"
+              onChange={handleFileSelect}
+              className="hidden"
+              disabled={isScanning}
+            />
           </div>
         </div>
       )}
