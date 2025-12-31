@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/fisayo-dev/loan-parser/api/internal/config"
+	"github.com/fisayo-dev/loan-parser/api/internal/logger"
 	"github.com/fisayo-dev/loan-parser/api/internal/routes"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
@@ -17,7 +18,7 @@ func main() {
 	port := os.Getenv("PORT") 
 
 	if port == "" {
-		log.Printf("⚠️ PORT is not found in the environment, defaulting to 8080")
+		logger.Warn.Println("⚠️ PORT is not found in the environment, defaulting to 8080")
 		port = "8080"
 	}
 	
@@ -35,7 +36,7 @@ func main() {
 		Addr:    fmt.Sprintf(":%s", port),
 	}
 
-	log.Printf("Server starting on Port: %v", port)
+	logger.Success.Printf("Server starting on Port: %v", port)
 	
 	err := server.ListenAndServe()
 	if err != nil {

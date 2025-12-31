@@ -2,8 +2,9 @@ package utils
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+
+	"github.com/fisayo-dev/loan-parser/api/internal/logger"
 )
 
 type ErrorBody struct {
@@ -26,13 +27,13 @@ func RespondJSON(w http.ResponseWriter, status int, payload interface{}) {
 	w.WriteHeader(status)
 
 	if err := json.NewEncoder(w).Encode(payload); err != nil {
-		log.Println("failed to write response:", err)
+		logger.Error.Println("failed to write response:", err)
 	}
 }
 
 func RespondError(w http.ResponseWriter, status int, code, message string) {
 	if status >= 500 {
-		log.Printf("server error [%s]: %s\n", code, message)
+		logger.Error.Printf("server error [%s]: %s\n", code, message)
 	}
 
 	RespondJSON(w, status, ErrorResponse{
