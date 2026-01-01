@@ -107,7 +107,7 @@ Extract all relevant information from the loan document and return ONLY valid JS
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body) // I am using io.ReadAll cause i am not sending the JSON via stream or socket. I am logging it.
 		return nil, fmt.Errorf("openai error: %s", string(body))
 	}
 
