@@ -23,7 +23,7 @@ func ScanLoan(w http.ResponseWriter, r *http.Request) {
 			w,
 			http.StatusBadRequest,
 			"INVALID_JSON",
-			"Invalid request payload",
+			"Invalid request payload sent",
 		)
 		return
 	}
