@@ -6,10 +6,8 @@ import {
   Download,
   FileIcon,
   FileText,
-  Lightbulb,
   Repeat,
   ScanSearch,
-  ScanText,
   UploadCloud,
   CheckCircle2,
   AlertTriangle,
@@ -165,7 +163,7 @@ const ScanPage = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-20 px-4 md:px-6 lg:px-8">
+    <div className="py-0 md:py-10 w-full max-w-7xl mx-auto pb-20 px-4 md:px-6 lg:px-8">
       {scanSubmitted === "not-started" ? (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pt-10 lg:pt-0">
              <div className="text-center space-y-4 px-4">
