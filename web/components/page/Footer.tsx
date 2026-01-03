@@ -34,7 +34,9 @@ const Footer = () => {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://x.com/fisayocoder"
+                target="_blank"
+                rel="noreferrer"
                 className="p-2 bg-gray-100 rounded-full hover:bg-black hover:text-white transition-colors"
               >
                 <Twitter className="w-5 h-5" />
