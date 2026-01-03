@@ -1,12 +1,16 @@
-import { Star } from "lucide-react";
-import Button from "../field/Button";
+import Image from "next/image";
 import Link from "next/link";
+import { GithubIcon } from "lucide-react";
+import Button from "../field/Button";
 
 const Header = () => {
   return (
-    <div className="z-50 fixed w-full grid items-center border-b border-gray-300 h-20 bg-[#ffffff]">
+    <div className="z-50 fixed top-0 w-full grid items-center border-b border-border h-20 bg-background/80 backdrop-blur-md">
       <div className="app-container w-full flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Loan Parser</h2>
+        <Link href="/" className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Loan Parser Logo" width={32} height={32} className="w-8 h-8" />
+            <h2 className="text-xl font-bold tracking-tight">Loan Parser</h2>
+        </Link>
 
         <div className="flex items-center space-x-2">
           <Link
@@ -14,13 +18,15 @@ const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className="star-btn flex gap-2 items-center outline-none border border-black  hover:bg-black px-4 py-3 rounded-full hover:text-white text-sm">
-              <Star className="star-icon h-4 w-4" />
-              Star on GitHub
-            </button>
+            <div className="hidden md:block">
+              <Button text="Star on Github" icon={GithubIcon} variant="outline" className="text-xs md:text-sm start-btn" /> 
+            </div>
+            <div className="block md:hidden">
+              <Button text="" icon={GithubIcon} variant="outline" className="text-xs md:text-sm start-btn" /> 
+            </div>
           </Link>
           <Link href="/scan">
-            <Button text="Get Started" className="text-sm" />
+            <Button text="Get Started" className="text-xs md:text-sm" />
           </Link>
         </div>
       </div>
