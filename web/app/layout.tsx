@@ -4,9 +4,9 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/page/Header";
 
-const interFont = localFont({
-  src: "../public/fonts/Inter-font.ttf",
-  variable: "--font-inter",
+const mainFont = localFont({
+  src: "../public/fonts/PlusJakartaSans-VariableFont_wght.ttf",
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -21,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${interFont.variable} antialiased`}>
+      <body className={`${mainFont.variable} antialiased`}>
         <Header />
-        <div className="app-container pt-40 min-h-[90vh]">{children}</div>
+        <div className="app-container pt-24 min-h-[90vh]">{children}</div>
         <Toaster />
       </body>
     </html>
