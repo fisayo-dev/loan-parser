@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { GithubIcon } from "lucide-react";
 import Button from "../field/Button";
 
 const Header = () => {
@@ -18,13 +18,15 @@ const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className="star-btn flex gap-2 items-center outline-none border border-black  hover:bg-black px-4 py-3 rounded-full hover:text-white text-sm">
-              <Star className="star-icon h-4 w-4" />
-              Star on GitHub
-            </button>
+            <div className="hidden md:block">
+              <Button text="Star on Github" icon={GithubIcon} variant="outline" className="text-xs md:text-sm start-btn" /> 
+            </div>
+            <div className="block md:hidden">
+              <Button text="" icon={GithubIcon} variant="outline" className="text-xs md:text-sm start-btn" /> 
+            </div>
           </Link>
           <Link href="/scan">
-            <Button text="Get Started" className="text-sm" />
+            <Button text="Get Started" className="text-xs md:text-sm" />
           </Link>
         </div>
       </div>

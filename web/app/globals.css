@@ -58,7 +58,7 @@ button {
   cursor: pointer;
 }
 
-.star-btn:hover .star-icon {
+.star-btn:hover > svg{
   color: #fbbf24;
   fill: #fbbf24;
 }
