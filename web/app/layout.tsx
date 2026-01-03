@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/page/Header";
+import Footer from "@/components/page/Footer";
 
 const mainFont = localFont({
   src: "../public/fonts/PlusJakartaSans-VariableFont_wght.ttf",
