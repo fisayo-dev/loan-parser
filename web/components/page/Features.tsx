@@ -21,18 +21,18 @@ const Features = () => {
               alt="Globe Image"
               height={300}
               width={300}
-              className="h-100 w-100"
+              className="h-80 w-80 md:h-100 md:w-100 grayscale"
             />
           </div>
         </div>
         <div className="grid justify-between items-center grid-cols-1 md:grid-cols-2">
           <div className="col-span-1">
             <Image
-              src="/assets/integrate.png"
+              src="/assets/extract_csv_json.jpg"
               alt="Globe Image"
               height={300}
               width={300}
-              className="h-100 w-100"
+              className="h-80 w-80 md:h-100 md:w-100 grayscale"
             />
           </div>
           <div className="col-span-1">
@@ -55,11 +55,11 @@ const Features = () => {
           </div>
           <div className="flex md:justify-end">
             <Image
-              src="/assets/integrate.png"
+              src="/assets/loan_breakdown.png"
               alt="Globe Image"
               height={300}
               width={300}
-              className="h-100 w-100"
+              className="h-80 w-80 md:h-100 md:w-100 grayscale"
             />
           </div>
         </div>
