@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/page/Header";
-import Footer from "@/components/page/Footer";
+import { Analytics } from "@vercel/analytics/next"
 
 const mainFont = localFont({
   src: "../public/fonts/PlusJakartaSans-VariableFont_wght.ttf",
@@ -73,6 +73,7 @@ export default function RootLayout({
         <Header />
         <div className="app-container pt-24 min-h-[90vh]">{children}</div>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
