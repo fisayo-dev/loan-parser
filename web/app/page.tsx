@@ -4,7 +4,7 @@ import Landing from "@/components/page/Landing";
 
 const page = () => {
   return (
-    <div className="grid gap-30">
+    <div className="grid gap-5">
       <Landing />
       <Features />
       <Footer />

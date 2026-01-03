@@ -4,7 +4,8 @@ import Link from "next/link";
 
 const Features = () => {
   return (
-    <div className=" grid gap-4">
+    <div className="mb-10 grid gap-4">
+      <h2 className="text-2xl md:text-4xl text-center font-bold mb-10">What Loan Parser offers?</h2>
       <div className="grid gap-20">
         <div className="grid items-center grid-cols-1 gap-4 md:grid-cols-2">
           <div className="block">
