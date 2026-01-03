@@ -10,7 +10,7 @@ const Landing = () => {
             Simplify Complex <br></br> Loan Documents
           </h2>
           <p className="text-sm lg:text-2xl mt-6 mb-10">
-            AI-powered loan summary
+            Parse loan documents into CSV/JSON Data. Analyze all the complex jargon of loan document
           </p>
         </div>
         <Link href="/scan" className="mb-4 w-full">
