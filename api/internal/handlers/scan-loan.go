@@ -36,7 +36,6 @@ func ScanLoan(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
-		// fmt.Printf("Error: %v", err)
 		logger.Error.Println("SCAN_FAILED:", err)
 		utils.RespondError(
 			w,
