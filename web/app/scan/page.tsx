@@ -28,6 +28,55 @@ const ScanPage = () => {
   const [error, setError] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
 
+  // Mock scan API function that simulates a delay and returns mock data
+  const mockScanLoan = async (fileName: string): Promise<LoanResult> => {
+    // Simulate API delay of 2-3 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+
+    // Return mock loan data
+    return {
+      loan_amount: "$250,000.00",
+      interest_rate: "4.75%",
+      loan_term_months: 360,
+      monthly_payment: "$1,304.12",
+      total_payment: "$469,483.20",
+      late_fee: "$50.00",
+      prepayment_penalty: "None after 3 years",
+      borrower: {
+        name: "John Michael Anderson",
+        address: "1234 Maple Street, Springfield, IL 62701"
+      },
+      lender: {
+        name: "First National Bank of Illinois",
+        address: "500 Financial Plaza, Chicago, IL 60601"
+      },
+      ai_summary: `This is a 30-year fixed-rate mortgage loan for $250,000 with a competitive interest rate of 4.75%. The loan features standard terms with reasonable monthly payments of $1,304.12.
+
+Key highlights:
+• Fixed interest rate provides payment stability over the loan term
+• No prepayment penalty after the initial 3-year period
+• Standard late fee structure of $50.00
+• Total interest paid over the life of the loan: $219,483.20
+
+The loan appears to be a conventional mortgage with favorable terms for the borrower. The interest rate is competitive for current market conditions, and the absence of prepayment penalties after year 3 provides flexibility for early payoff.`,
+      risk_highlights: `Overall Risk Level: LOW TO MODERATE
+
+Potential concerns to be aware of:
+
+1. Long-term commitment: A 30-year term means significant total interest ($219,483.20) - nearly 88% of the original loan amount.
+
+2. Early prepayment restrictions: Prepayment penalties apply during the first 3 years, which may limit refinancing options if rates drop.
+
+3. Late payment impact: While the $50 late fee is standard, consistent late payments could damage credit score and potentially trigger default clauses.
+
+Recommendations:
+• Consider making additional principal payments after year 3 to reduce total interest
+• Maintain an emergency fund covering 6+ months of payments
+• Review loan documents for any balloon payment clauses or adjustable rate triggers
+• Ensure adequate property insurance to protect the collateral`
+    };
+  };
+
   const handleScan = async () => {
     if (!selectedFile) {
       toast.error("Please select a file first");
@@ -38,16 +87,20 @@ const ScanPage = () => {
     setError("");
 
     try {
-      const fileText = await selectedFile.text();
+      // Mock API response
+      const result = await mockScanLoan(selectedFile.name);
 
-      const result = await loanService.scanLoan({
-        file_name: selectedFile.name,
-        file_type: selectedFile.type,
-        file_data: fileText,
-      });
+      // Real API Response
+      // const fileText = await selectedFile.text();
+      // const result = await loanService.scanLoan({
+      //   file_name: selectedFile.name,
+      //   file_type: selectedFile.type,
+      //   file_data: fileText,
+      // });
 
       setScanResult(result);
       setScanSubmitted("finished");
+      toast.success("Analysis complete!");
     } catch (err: any) {
       toast.error(err.message || "Failed to scan loan");
       console.error(err);
