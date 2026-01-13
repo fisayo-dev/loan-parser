@@ -311,7 +311,7 @@ const ScanPage = () => {
 
                          <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm">
                              <div className="flex items-center gap-3 mb-4">
-                                 <ScanSearch className="w-5 h-5 text-blue-500" />
+                                 <ScanSearch className="w-5 h-5" />
                                  <h3 className="font-bold text-lg">Executive Summary</h3>
                              </div>
                              <p className="text-gray-600 leading-relaxed whitespace-pre-line text-sm md:text-base">
