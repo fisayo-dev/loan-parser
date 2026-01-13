@@ -64,7 +64,7 @@ Extract all relevant information from the loan document and return ONLY valid JS
   "monthly_payment": "string (e.g., '322.74')",
   "total_payment": "string (e.g., '11618.64')",
   "late_fee": "string (e.g., '25')",
-  "prepayment_penalty": boolean,
+  "prepayment_penalty": string,
   "borrower": {
     "name": "string",
     "address": "string"
@@ -108,7 +108,7 @@ Extract all relevant information from the loan document and return ONLY valid JS
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body) // I am using io.ReadAll cause i am not sending the JSON via stream or socket. I am logging it.
-		return nil, fmt.Errorf("openai error: %s", string(body))
+		return nil, fmt.Errorf("Openai error: %s", string(body))
 	}
 
 	var openAIResponse struct {
@@ -125,7 +125,7 @@ Extract all relevant information from the loan document and return ONLY valid JS
 
 	// Check for empty response
 	if len(openAIResponse.Choices) == 0 {
-		return nil, fmt.Errorf("empty response from OpenAI")
+		return nil, fmt.Errorf("Empty response from OpenAI")
 	}
 
 	// Parse the JSON from the model
@@ -135,7 +135,7 @@ Extract all relevant information from the loan document and return ONLY valid JS
 		&result,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing OpenAI response: %v", err)
+		return nil, fmt.Errorf("Error parsing OpenAI response: %v", err)
 	}
 
 	return &result, nil

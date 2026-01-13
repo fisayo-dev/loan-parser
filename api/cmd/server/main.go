@@ -18,7 +18,7 @@ func main() {
 	port := os.Getenv("PORT") 
 
 	if port == "" {
-		logger.Warn.Println("⚠️ PORT is not found in the environment, defaulting to 8080")
+		logger.Warn.Println("PORT is not found in the environment, defaulting to 8080")
 		port = "8080"
 	}
 	

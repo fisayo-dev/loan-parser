@@ -20,11 +20,11 @@ export interface ApiResponse<T> {
 export interface LoanResult {
   loan_amount: string;
   interest_rate: string;
-  loan_term_months: string;
+  loan_term_months: number;
   monthly_payment: string;
   total_payment: string;
   late_fee: string;
-  prepayment_penalty: boolean;
+  prepayment_penalty: string;
 
   borrower: {
     name: string;
